@@ -14,22 +14,17 @@
 <!-- ===================================================================
   SETUP NOTES FOR THE SITE OWNER (delete this comment block once live)
   -------------------------------------------------------------------
-  1. AFFILIATE TAG: search this file for AFFILIATE_TAG and replace the
-     placeholder with your real Amazon Associates tracking ID once your
-     application is approved. Amazon reviews the LIVE site before
-     approving you, so publish first with the placeholder, then swap it.
-  2. PRODUCTS: every card below has data-asin="PLACEHOLDER-ASIN". Swap
-     in real ASINs and re-point the href using the buildAmazonLink()
-     pattern already wired up in the <script> at the bottom. Do not
-     hot-link real Amazon product images unless you're pulling them via
-     the Product Advertising API under your approved account — using
-     scraped images/prices without that agreement violates their terms.
-  3. DISCLOSURE: the FTC/Amazon-required affiliate disclosure at the
-     top and bottom is not optional. Don't remove it.
-  4. HEALTH CLAIMS: copy in the "For People" aisle is intentionally
-     general (hygiene, testing, prevention) rather than medical/dosing
-     advice. Keep it that way — Amazon suspends Associates accounts for
-     unsubstantiated health claims, and it's the right call regardless.
+  Products are now static HTML (not JavaScript-rendered), so every
+  title/description/price/image/link is visible in the raw page source
+  for search engines and any crawler, JS or no JS.
+
+  TO ADD OR EDIT A PRODUCT: find its <article class="card"> block below
+  in the relevant aisle and copy/edit the pattern — image src, alt,
+  card-tag, card-title, card-desc, card-price, and the card-cta href
+  (which already has the real AFFILIATE_TAG baked in: igotworms20-20).
+
+  DISCLOSURE: the FTC/Amazon-required affiliate disclosure at the top
+  and bottom is not optional. Don't remove it.
 =========================================================================-->
 
 <style>
@@ -67,7 +62,6 @@
   img{max-width:100%;display:block;}
   .wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
 
-  /* ---------- Top disclosure bar ---------- */
   .disclosure-bar{
     background:var(--ink);
     color:var(--cream);
@@ -78,7 +72,6 @@
     padding:7px 16px;
   }
 
-  /* ---------- Header ---------- */
   header{
     background:var(--cream);
     border-bottom:3px solid var(--ink);
@@ -95,7 +88,6 @@
   nav a:hover{border-color:var(--rust);}
   @media (max-width:720px){ nav{display:none;} }
 
-  /* ---------- Hero: torn feed-sack label ---------- */
   .hero{
     background:var(--pasture);
     color:var(--cream);
@@ -163,7 +155,6 @@
   .btn-primary{background:var(--rust);color:var(--chalk);border-color:var(--ink);}
   .btn-ghost{background:transparent;color:var(--cream);border-color:var(--cream);}
 
-  /* signature stamp element */
   .stamp{
     width:230px;height:230px;
     border:3px solid var(--cream);
@@ -196,7 +187,6 @@
   }
   @media (prefers-reduced-motion: reduce){ .stamp{animation:none;} }
 
-  /* ---------- Aisle nav strip ---------- */
   .aisle-strip{
     background:var(--chalk);
     border-bottom:1px solid var(--line);
@@ -216,7 +206,6 @@
   }
   .aisle-chip:hover{background:var(--ink);color:var(--cream);}
 
-  /* ---------- Aisle sections ---------- */
   .aisle{padding:72px 0;border-bottom:1px solid var(--line);}
   .aisle-head{
     display:flex;
@@ -269,7 +258,7 @@
     display:flex;align-items:center;justify-content:center;
     padding:20px;
   }
-  .card-media svg{width:100%;height:100%;max-width:110px;max-height:110px;}
+  .card-media img{width:100%;height:100%;object-fit:contain;}
   .card-body{padding:16px 16px 18px;display:flex;flex-direction:column;gap:8px;flex:1;}
   .card-tag{
     font-family:'JetBrains Mono',monospace;
@@ -278,8 +267,8 @@
     letter-spacing:0.06em;
     color:var(--pasture-dark);
   }
-  .card-title{font-family:'Zilla Slab',serif;font-weight:700;font-size:17px;line-height:1.25;}
-  .card-desc{font-size:13px;color:var(--soil);flex:1;}
+  .card-title{font-family:'Zilla Slab',serif;font-weight:700;font-size:17px;line-height:1.25;margin:0;}
+  .card-desc{font-size:13px;color:var(--soil);flex:1;margin:0;}
   .card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:6px;}
   .card-price{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;}
   .card-cta{
@@ -294,14 +283,7 @@
     border:2px solid var(--ink);
   }
   .card-cta:hover{background:var(--rust-dark);}
-  .placeholder-flag{
-    font-size:10px;
-    color:var(--rust);
-    font-family:'JetBrains Mono',monospace;
-    letter-spacing:0.04em;
-  }
 
-  /* ---------- Trust strip ---------- */
   .trust{
     background:var(--ink);
     color:var(--cream);
@@ -317,14 +299,12 @@
   .trust h3{font-size:18px;margin-bottom:8px;}
   .trust p{font-size:14px;opacity:0.8;max-width:280px;margin:0 auto;}
 
-  /* ---------- FAQ ---------- */
   .faq{padding:72px 0;}
   .faq-item{border-top:1px solid var(--line);padding:22px 0;}
   .faq-item:last-child{border-bottom:1px solid var(--line);}
   .faq-item h3{font-size:18px;margin-bottom:8px;}
   .faq-item p{font-size:14.5px;color:var(--soil);max-width:640px;}
 
-  /* ---------- Footer ---------- */
   footer{background:var(--pasture-dark);color:var(--cream);padding:48px 0 24px;}
   footer .wrap{display:flex;flex-direction:column;gap:18px;}
   .footer-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;}
@@ -399,7 +379,62 @@
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.5-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.5-9 9-9 9z" stroke="#1B2A2E" stroke-width="1.6"/></svg>
       </div>
     </div>
-    <div class="product-grid" id="grid-humans"></div>
+
+    <div class="product-grid">
+
+      <article class="card">
+        <div class="card-media"><img src="https://m.media-amazon.com/images/I/41WN2+QTlfL._AC_SL500_.jpg" alt="Reese's Pinworm Medicine Liquid, Full Prescription Strength, Banana Flavor, 2 Fl Oz"></div>
+        <div class="card-body">
+          <span class="card-tag">OTC Medicine</span>
+          <h3 class="card-title">Reese's Pinworm Medicine Liquid, Full Prescription Strength, Banana Flavor, 2 Fl Oz</h3>
+          <p class="card-desc">Single-dose pyrantel pamoate liquid treatment for the whole family, ages 2+.</p>
+          <div class="card-foot">
+            <span class="card-price">$17.95</span>
+            <a class="card-cta" href="https://www.amazon.com/dp/B002LF0J1M/?tag=igotworms20-20" target="_blank" rel="nofollow sponsored noopener">View on Amazon</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-media"><img src="https://m.media-amazon.com/images/I/71Pd1+oQADL._AC_SL1500_.jpg" alt="FlyLeaf Antifungal Ringworm Treatment Cream, 3.53oz"></div>
+        <div class="card-body">
+          <span class="card-tag">Topical</span>
+          <h3 class="card-title">FlyLeaf Antifungal Ringworm Treatment Cream, 3.53oz</h3>
+          <p class="card-desc">Miconazole nitrate 2% cream with tea tree oil for ringworm, jock itch, and athlete's foot.</p>
+          <div class="card-foot">
+            <span class="card-price">$28.49</span>
+            <a class="card-cta" href="https://www.amazon.com/dp/B0GTTVNWDK/?tag=igotworms20-20" target="_blank" rel="nofollow sponsored noopener">View on Amazon</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-media"><img src="https://m.media-amazon.com/images/I/61QNFepCX8L._AC_SL1500_.jpg" alt="Zahler ParaGuard Advanced Intestinal Support, 90 Softgels"></div>
+        <div class="card-body">
+          <span class="card-tag">Supplement</span>
+          <h3 class="card-title">Zahler ParaGuard Advanced Intestinal Support, 90 Softgels</h3>
+          <p class="card-desc">Herbal softgel with wormwood, clove, and pumpkin seed for digestive balance. Kosher, gluten-free.</p>
+          <div class="card-foot">
+            <span class="card-price">$29.95</span>
+            <a class="card-cta" href="https://www.amazon.com/dp/B078NCFVVJ/?tag=igotworms20-20" target="_blank" rel="nofollow sponsored noopener">View on Amazon</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-media"><img src="https://m.media-amazon.com/images/I/61JseVqVY-L._AC_SL1500_.jpg" alt="Parasitol Pinworm Medicine, Pyrantel Pamoate Liquid, 1 Fl Oz"></div>
+        <div class="card-body">
+          <span class="card-tag">OTC Medicine</span>
+          <h3 class="card-title">Parasitol Pinworm Medicine, Pyrantel Pamoate Liquid, 1 Fl Oz</h3>
+          <p class="card-desc">Cherry-flavored liquid dewormer for kids and adults ages 2+, easy single-dose suspension.</p>
+          <div class="card-foot">
+            <span class="card-price">$11.54</span>
+            <a class="card-cta" href="https://www.amazon.com/dp/B0092PMNI6/?tag=igotworms20-20" target="_blank" rel="nofollow sponsored noopener">View on Amazon</a>
+          </div>
+        </div>
+      </article>
+
+    </div>
   </div>
 </section>
 
@@ -411,13 +446,68 @@
         <span class="aisle-num">Aisle 02</span>
         <h2>Cats &amp; Dogs</h2>
         <p>Chewables, topicals, and prevention collars for the four-legged household members.</p>
-<p style="margin-top:8px;"><a href="/dog-worms-symptoms.html" style="color:var(--rust);font-weight:600;">→ How to tell if your dog has worms</a></p>
+        <p style="margin-top:8px;"><a href="/dog-worms-symptoms.html" style="color:var(--rust);font-weight:600;">→ How to tell if your dog has worms</a></p>
       </div>
       <div class="badge-icon">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="14" r="5" stroke="#1B2A2E" stroke-width="1.6"/><circle cx="6" cy="7" r="2" stroke="#1B2A2E" stroke-width="1.6"/><circle cx="18" cy="7" r="2" stroke="#1B2A2E" stroke-width="1.6"/><circle cx="9" cy="4.5" r="1.6" stroke="#1B2A2E" stroke-width="1.4"/><circle cx="15" cy="4.5" r="1.6" stroke="#1B2A2E" stroke-width="1.4"/></svg>
       </div>
     </div>
-    <div class="product-grid" id="grid-pets"></div>
+
+    <div class="product-grid">
+
+      <article class="card">
+        <div class="card-media"><img src="https://m.media-amazon.com/images/I/71xoFDfUIwL._AC_SL1500_.jpg" alt="Elanco Tapeworm Dewormer, Praziquantel Tablets, 3-count"></div>
+        <div class="card-body">
+          <span class="card-tag">Cats</span>
+          <h3 class="card-title">Elanco Tapeworm Dewormer, Praziquantel Tablets, 3-count</h3>
+          <p class="card-desc">Tapeworm-specific tablets for cats and kittens 6 weeks and older, 23mg praziquantel per tablet.</p>
+          <div class="card-foot">
+            <span class="card-price">$17.84</span>
+            <a class="card-cta" href="https://www.amazon.com/dp/B019CD4ZDS/?tag=igotworms20-20" target="_blank" rel="nofollow sponsored noopener">View on Amazon</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-media"><img src="https://m.media-amazon.com/images/I/81liPIevavL._AC_SL1500_.jpg" alt="PetArmor 7 Way De-Wormer for Dogs, 2-count"></div>
+        <div class="card-body">
+          <span class="card-tag">Dogs</span>
+          <h3 class="card-title">PetArmor 7 Way De-Wormer for Dogs, 2-count</h3>
+          <p class="card-desc">Broad-spectrum chewable for tapeworm, roundworm & hookworm, puppies and small dogs 6-25 lbs.</p>
+          <div class="card-foot">
+            <span class="card-price">$13.84</span>
+            <a class="card-cta" href="https://www.amazon.com/dp/B07CXWHH1S/?tag=igotworms20-20" target="_blank" rel="nofollow sponsored noopener">View on Amazon</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-media"><img src="https://m.media-amazon.com/images/I/61ETksXpM1L._AC_SL1500_.jpg" alt="Vetr Primacur Broad-Spectrum Oral Suspension, 240ML"></div>
+        <div class="card-body">
+          <span class="card-tag">Broad-spectrum</span>
+          <h3 class="card-title">Vetr Primacur Broad-Spectrum Oral Suspension, 240ML</h3>
+          <p class="card-desc">10% fenbendazole oral liquid dewormer for dogs and cats, peanut butter flavor.</p>
+          <div class="card-foot">
+            <span class="card-price">$46.58</span>
+            <a class="card-cta" href="https://www.amazon.com/dp/B0GMY4S3QS/?tag=igotworms20-20" target="_blank" rel="nofollow sponsored noopener">View on Amazon</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-media"><img src="https://m.media-amazon.com/images/I/71+0D6d0yeL._AC_SL1500_.jpg" alt="Bye Bye Worms Advanced Dewormer, Chicken Flavor, 2 OZ"></div>
+        <div class="card-body">
+          <span class="card-tag">Cats &amp; Dogs</span>
+          <h3 class="card-title">Bye Bye Worms Advanced Dewormer, Chicken Flavor, 2 OZ</h3>
+          <p class="card-desc">Broad-spectrum liquid treatment for roundworms, hookworms, whipworms, lungworms &amp; pinworms, ages 2 weeks+.</p>
+          <div class="card-foot">
+            <span class="card-price">$37.99</span>
+            <a class="card-cta" href="https://www.amazon.com/dp/B0G3T8BXKY/?tag=igotworms20-20" target="_blank" rel="nofollow sponsored noopener">View on Amazon</a>
+          </div>
+        </div>
+      </article>
+
+    </div>
   </div>
 </section>
 
@@ -434,7 +524,62 @@
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M4 10l3-5h10l3 5-8 10-8-10z" stroke="#1B2A2E" stroke-width="1.6" stroke-linejoin="round"/></svg>
       </div>
     </div>
-    <div class="product-grid" id="grid-livestock"></div>
+
+    <div class="product-grid">
+
+      <article class="card">
+        <div class="card-media"><img src="https://m.media-amazon.com/images/I/81K5I-Woa4L._SL1500_.jpg" alt="Roosty's Naturals Flock Armor Chicken Dewormer Chili Mix, 16oz"></div>
+        <div class="card-body">
+          <span class="card-tag">Poultry</span>
+          <h3 class="card-title">Roosty's Naturals Flock Armor Chicken Dewormer Chili Mix, 16oz</h3>
+          <p class="card-desc">Natural chili &amp; oregano feed additive for daily worm defense, egg quality, and gut health support.</p>
+          <div class="card-foot">
+            <span class="card-price">$32.99</span>
+            <a class="card-cta" href="https://www.amazon.com/dp/B0CZY1QCSW/?tag=igotworms20-20" target="_blank" rel="nofollow sponsored noopener">View on Amazon</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-media"><img src="https://m.media-amazon.com/images/I/611PzG3gsXL._AC_SL1080_.jpg" alt="Durvet Ivermectin Paste Dewormer, Apple Flavored, 6.08g"></div>
+        <div class="card-body">
+          <span class="card-tag">Equine</span>
+          <h3 class="card-title">Durvet Ivermectin Paste Dewormer, Apple Flavored, 6.08g</h3>
+          <p class="card-desc">1.87% ivermectin equine paste, removes worms and bots with a single oral dose.</p>
+          <div class="card-foot">
+            <span class="card-price">$18.95</span>
+            <a class="card-cta" href="https://www.amazon.com/dp/B00II3L6JK/?tag=igotworms20-20" target="_blank" rel="nofollow sponsored noopener">View on Amazon</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-media"><img src="https://m.media-amazon.com/images/I/71fdm3-KarL._AC_SL1500_.jpg" alt="Durvet Ivermectin Pour-On Dewormer, 250mL"></div>
+        <div class="card-body">
+          <span class="card-tag">Cattle</span>
+          <h3 class="card-title">Durvet Ivermectin Pour-On Dewormer, 250mL</h3>
+          <p class="card-desc">Topical treatment for gastrointestinal roundworms, lungworms, grubs, lice, and mange mites in cattle.</p>
+          <div class="card-foot">
+            <span class="card-price">$25.58</span>
+            <a class="card-cta" href="https://www.amazon.com/dp/B00JAL3AAW/?tag=igotworms20-20" target="_blank" rel="nofollow sponsored noopener">View on Amazon</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-media"><img src="https://m.media-amazon.com/images/I/710JlII89PL._AC_SL1448_.jpg" alt="Fecal Egg Count Kit for Goats, Sheep, Cattle, Alpacas & Llamas"></div>
+        <div class="card-body">
+          <span class="card-tag">Test kit</span>
+          <h3 class="card-title">Fecal Egg Count Kit for Goats, Sheep, Cattle, Alpacas &amp; Llamas</h3>
+          <p class="card-desc">McMaster Method parasite testing kit — check worm load and dewormer effectiveness at home.</p>
+          <div class="card-foot">
+            <span class="card-price">$79.95</span>
+            <a class="card-cta" href="https://www.amazon.com/dp/B0DTNMN8FV/?tag=igotworms20-20" target="_blank" rel="nofollow sponsored noopener">View on Amazon</a>
+          </div>
+        </div>
+      </article>
+
+    </div>
   </div>
 </section>
 
@@ -486,83 +631,9 @@
     <div class="footer-disclosure">
       <strong>Affiliate disclosure:</strong> igotworms.com is a participant in the Amazon Services LLC Associates Program, an affiliate advertising program designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.com. As an Amazon Associate, we earn from qualifying purchases. Product prices and availability shown on this site are accurate as of the date/time indicated and are subject to change; any price/availability information displayed on Amazon.com at the time of purchase applies. Content on this site is for informational purposes only and is not medical or veterinary advice — consult a licensed physician or veterinarian for diagnosis and treatment.
     </div>
-    <div class="footer-bottom">© <span id="year"></span> I Got Worms · igotworms.com</div>
+    <div class="footer-bottom">© 2026 I Got Worms · igotworms.com</div>
   </div>
 </footer>
-
-<script>
-/* =====================================================================
-   CONFIG — replace once your Amazon Associates application is approved
-===================================================================== */
-const AFFILIATE_TAG = "igotworms20-20"; // e.g. "igotworms0d-20"
-
-function buildAmazonLink(asin){
-  // Placeholder ASINs won't resolve — swap data-asin values below with
-  // real ones, then this produces a proper tracked product link.
-  return `https://www.amazon.com/dp/${asin}/?tag=${AFFILIATE_TAG}`;
-}
-
-/* =====================================================================
-   PRODUCT DATA — every entry is an editorial placeholder, not a live
-   Amazon listing. Replace name/desc/price/asin with real catalog data
-   once you're pulling it via the Product Advertising API.
-===================================================================== */
-const ICONS = {
-  capsule: `<svg viewBox="0 0 100 100"><rect x="20" y="38" width="60" height="24" rx="12" fill="none" stroke="#3D5A40" stroke-width="3"/><line x1="50" y1="38" x2="50" y2="62" stroke="#3D5A40" stroke-width="3"/></svg>`,
-  kit: `<svg viewBox="0 0 100 100"><rect x="22" y="26" width="56" height="48" rx="4" fill="none" stroke="#B5502D" stroke-width="3"/><line x1="22" y1="42" x2="78" y2="42" stroke="#B5502D" stroke-width="3"/><circle cx="50" cy="58" r="8" fill="none" stroke="#B5502D" stroke-width="3"/></svg>`,
-  drop: `<svg viewBox="0 0 100 100"><path d="M50 20c14 20 22 32 22 44a22 22 0 1 1-44 0c0-12 8-24 22-44z" fill="none" stroke="#3D5A40" stroke-width="3"/></svg>`,
-  collar: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="26" fill="none" stroke="#B5502D" stroke-width="3"/><circle cx="50" cy="24" r="4" fill="#B5502D"/></svg>`,
-  chew: `<svg viewBox="0 0 100 100"><path d="M30 40a10 10 0 1 1 14 14l12 12a10 10 0 1 1-14 14z" fill="none" stroke="#3D5A40" stroke-width="3"/><path d="M70 60a10 10 0 1 0-14-14L44 34a10 10 0 1 0 14-14" fill="none" stroke="#3D5A40" stroke-width="3"/></svg>`,
-  pouron: `<svg viewBox="0 0 100 100"><rect x="34" y="20" width="32" height="52" rx="6" fill="none" stroke="#6B4A34" stroke-width="3"/><rect x="42" y="10" width="16" height="12" fill="none" stroke="#6B4A34" stroke-width="3"/></svg>`,
-  block: `<svg viewBox="0 0 100 100"><rect x="20" y="30" width="60" height="40" fill="none" stroke="#6B4A34" stroke-width="3"/><line x1="20" y1="45" x2="80" y2="45" stroke="#6B4A34" stroke-width="3"/></svg>`,
-  syringe: `<svg viewBox="0 0 100 100"><rect x="20" y="46" width="44" height="12" rx="2" fill="none" stroke="#6B4A34" stroke-width="3" transform="rotate(-20 42 52)"/><line x1="62" y1="38" x2="82" y2="20" stroke="#6B4A34" stroke-width="3"/></svg>`,
-};
-
-const PRODUCTS = {
-  humans: [
-    {tag:"OTC Medicine", title:"Reese's Pinworm Medicine Liquid, Full Prescription Strength, Banana Flavor, 2 Fl Oz", desc:"Single-dose pyrantel pamoate liquid treatment for the whole family, ages 2+.", price:"$17.95", icon:"capsule", asin:"B002LF0J1M", image:"https://m.media-amazon.com/images/I/41WN2+QTlfL._AC_SL500_.jpg"},
-    {tag:"Topical", title:"FlyLeaf Antifungal Ringworm Treatment Cream, 3.53oz", desc:"Miconazole nitrate 2% cream with tea tree oil for ringworm, jock itch, and athlete's foot.", price:"$28.49", icon:"drop", asin:"B0GTTVNWDK", image:"https://m.media-amazon.com/images/I/71Pd1+oQADL._AC_SL1500_.jpg"},
-    {tag:"Supplement", title:"Zahler ParaGuard Advanced Intestinal Support, 90 Softgels", desc:"Herbal softgel with wormwood, clove, and pumpkin seed for digestive balance. Kosher, gluten-free.", price:"$29.95", icon:"capsule", asin:"B078NCFVVJ", image:"https://m.media-amazon.com/images/I/61QNFepCX8L._AC_SL1500_.jpg"},
-    {tag:"OTC Medicine", title:"Parasitol Pinworm Medicine, Pyrantel Pamoate Liquid, 1 Fl Oz", desc:"Cherry-flavored liquid dewormer for kids and adults ages 2+, easy single-dose suspension.", price:"$11.54", icon:"drop", asin:"B0092PMNI6", image:"https://m.media-amazon.com/images/I/61JseVqVY-L._AC_SL1500_.jpg"},
-  ],
-  pets: [
-    {tag:"Cats", title:"Elanco Tapeworm Dewormer, Praziquantel Tablets, 3-count", desc:"Tapeworm-specific tablets for cats and kittens 6 weeks and older, 23mg praziquantel per tablet.", price:"$17.84", icon:"chew", asin:"B019CD4ZDS", image:"https://m.media-amazon.com/images/I/71xoFDfUIwL._AC_SL1500_.jpg"},
-    {tag:"Dogs", title:"PetArmor 7 Way De-Wormer for Dogs, 2-count", desc:"Broad-spectrum chewable for tapeworm, roundworm & hookworm, puppies and small dogs 6-25 lbs.", price:"$13.84", icon:"chew", asin:"B07CXWHH1S", image:"https://m.media-amazon.com/images/I/81liPIevavL._AC_SL1500_.jpg"},
-    {tag:"Broad-spectrum", title:"Vetr Primacur Broad-Spectrum Oral Suspension, 240ML", desc:"10% fenbendazole oral liquid dewormer for dogs and cats, peanut butter flavor.", price:"$46.58", icon:"drop", asin:"B0GMY4S3QS", image:"https://m.media-amazon.com/images/I/61ETksXpM1L._AC_SL1500_.jpg"},
-    {tag:"Cats & Dogs", title:"Bye Bye Worms Advanced Dewormer, Chicken Flavor, 2 OZ", desc:"Broad-spectrum liquid treatment for roundworms, hookworms, whipworms, lungworms & pinworms, ages 2 weeks+.", price:"$37.99", icon:"syringe", asin:"B0G3T8BXKY", image:"https://m.media-amazon.com/images/I/71+0D6d0yeL._AC_SL1500_.jpg"},
-  ],
-  livestock: [
-    {tag:"Poultry", title:"Roosty's Naturals Flock Armor Chicken Dewormer Chili Mix, 16oz", desc:"Natural chili & oregano feed additive for daily worm defense, egg quality, and gut health support.", price:"$32.99", icon:"block", asin:"B0CZY1QCSW", image:"https://m.media-amazon.com/images/I/81K5I-Woa4L._SL1500_.jpg"},
-    {tag:"Equine", title:"Durvet Ivermectin Paste Dewormer, Apple Flavored, 6.08g", desc:"1.87% ivermectin equine paste, removes worms and bots with a single oral dose.", price:"$18.95", icon:"syringe", asin:"B00II3L6JK", image:"https://m.media-amazon.com/images/I/611PzG3gsXL._AC_SL1080_.jpg"},
-    {tag:"Cattle", title:"Durvet Ivermectin Pour-On Dewormer, 250mL", desc:"Topical treatment for gastrointestinal roundworms, lungworms, grubs, lice, and mange mites in cattle.", price:"$25.58", icon:"pouron", asin:"B00JAL3AAW", image:"https://m.media-amazon.com/images/I/71fdm3-KarL._AC_SL1500_.jpg"},
-    {tag:"Test kit", title:"Fecal Egg Count Kit for Goats, Sheep, Cattle, Alpacas & Llamas", desc:"McMaster Method parasite testing kit — check worm load and dewormer effectiveness at home.", price:"$79.95", icon:"kit", asin:"B0DTNMN8FV", image:"https://m.media-amazon.com/images/I/710JlII89PL._AC_SL1448_.jpg"},
-  ],
-};
-
-function renderGrid(containerId, items){
-  const el = document.getElementById(containerId);
-  el.innerHTML = items.map(p => `
-    <article class="card">
-      <div class="card-media">${p.image ? `<img src="${p.image}" alt="${p.title}" style="width:100%;height:100%;object-fit:contain;">` : ICONS[p.icon]}</div>
-      <div class="card-body">
-        <span class="card-tag">${p.tag}</span>
-        <h3 class="card-title">${p.title}</h3>
-        <p class="card-desc">${p.desc}</p>
-        <div class="card-foot">
-          <span class="card-price">${p.price}</span>
-          <a class="card-cta" href="${buildAmazonLink(p.asin)}" target="_blank" rel="nofollow sponsored noopener">View on Amazon</a>
-        </div>
-        </div>
-    </article>
-  `).join("");
-}
-
-renderGrid("grid-humans", PRODUCTS.humans);
-renderGrid("grid-pets", PRODUCTS.pets);
-renderGrid("grid-livestock", PRODUCTS.livestock);
-
-document.getElementById("year").textContent = new Date().getFullYear();
-</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;700&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
